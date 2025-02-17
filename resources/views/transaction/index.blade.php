@@ -21,12 +21,12 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin: 0;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 30px auto;
             padding: 20px;
             background-color: #fff;
@@ -35,12 +35,12 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         label {
             font-size: 1rem;
-            margin-bottom: 5px;
+            font-weight: bold;
             display: block;
             color: #333;
         }
@@ -65,15 +65,62 @@
             width: 100%;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 10px;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .cart-table th, .cart-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .cart-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .reset-btn {
+            background-color: red;
+        }
+
+        .reset-btn:hover {
+            background-color: darkred;
+        }
+
+        .checkout-btn {
+            background-color: green;
+        }
+
+        .checkout-btn:hover {
+            background-color: darkgreen;
+        }
+
         footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         .back-link {
@@ -90,14 +137,19 @@
 <body>
 
     <header>
-        <h1>POS Transaction Page</h1>
+        <h1>POS Transaction</h1>
     </header>
 
     <div class="container">
-        <form action="#">
+        <form id="pos-form">
             <div class="form-group">
-                <label for="product">Product:</label>
+                <label for="product">Product Name:</label>
                 <input type="text" id="product" name="product" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price (Rp):</label>
+                <input type="number" id="price" name="price" required>
             </div>
 
             <div class="form-group">
@@ -105,13 +157,99 @@
                 <input type="number" id="quantity" name="quantity" required>
             </div>
 
-            <button type="submit">Add to Cart</button>
+            <button type="button" onclick="addToCart()">Add to Cart</button>
         </form>
+
+        <h2>Cart</h2>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price (Rp)</th>
+                    <th>Quantity</th>
+                    <th>Subtotal (Rp)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="cart-body">
+                <tr><td colspan="5" style="text-align:center;">No items in cart</td></tr>
+            </tbody>
+        </table>
+
+        <p class="total">Total: <span id="total-price">Rp 0</span></p>
+
+        <div class="button-group">
+            <button class="reset-btn" onclick="resetCart()">Reset</button>
+            <button class="checkout-btn" onclick="checkout()">Checkout</button>
+        </div>
     </div>
 
     <footer>
         <a href="{{ url('/') }}" class="back-link">Back to Home</a>
     </footer>
+
+    <script>
+        let cart = [];
+
+        function addToCart() {
+            const product = document.getElementById("product").value;
+            const price = parseFloat(document.getElementById("price").value);
+            const quantity = parseInt(document.getElementById("quantity").value);
+
+            if (!product || !price || !quantity || price < 0 || quantity <= 0) {
+                alert("Please enter valid product details.");
+                return;
+            }
+
+            const subtotal = price * quantity;
+            cart.push({ product, price, quantity, subtotal });
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartBody = document.getElementById("cart-body");
+            cartBody.innerHTML = "";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.subtotal;
+                cartBody.innerHTML += `
+                    <tr>
+                        <td>${item.product}</td>
+                        <td>Rp ${item.price.toLocaleString()}</td>
+                        <td>${item.quantity}</td>
+                        <td>Rp ${item.subtotal.toLocaleString()}</td>
+                        <td><button onclick="removeFromCart(${index})">❌</button></td>
+                    </tr>
+                `;
+            });
+
+            if (cart.length === 0) {
+                cartBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No items in cart</td></tr>`;
+            }
+
+            document.getElementById("total-price").innerText = `Rp ${total.toLocaleString()}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function resetCart() {
+            cart = [];
+            updateCart();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            alert("Checkout successful! Thank you for your purchase.");
+            resetCart();
+        }
+    </script>
 
 </body>
 </html>
