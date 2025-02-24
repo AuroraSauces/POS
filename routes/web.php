@@ -4,6 +4,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\LevelController;
+use App\Http\Controllers\KategoriController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');  // Halaman Home
@@ -22,3 +24,6 @@ Route::get('/user/{id}/name/{name}', [UserController::class, 'profile'])->name('
 // Route untuk halaman transaksi POS
 Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction');
 
+route::get('/level',[LevelController::class,'index']);
+route::get('/kategori',[KategoriController::class,'index']);
+route::get('/user',[UserController::class,'index']);
