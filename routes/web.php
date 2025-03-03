@@ -9,7 +9,11 @@ use App\Http\Controllers\KategoriController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');  // Halaman Home
-
+Route::get('/user/tambah', [UserController::class, 'tambah']);
+Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
+route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
+route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
+route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 // Route untuk kategori produk
 Route::prefix('category')->group(function() {
     Route::get('food-beverage', [ProductController::class, 'foodBeverage'])->name('category.foodBeverage');

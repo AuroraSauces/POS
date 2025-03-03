@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
             StokSeeder::class,
             PenjualanSeeder::class,
             PenjualanDetailSeeder::class,
+            levelseeder::class,
+            userseeder::class,
         ]);
     }
 }
